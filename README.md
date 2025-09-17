@@ -1,93 +1,129 @@
-# B251
+#   Semestrální práce Předmětu NI-EVY, semestr B251 - Compact Suffix Trie
+
+Cílem semestrální práce je implementovat a použít suffixovou trii tak, jak je definovaná v přednáškách. Implementace, pokud nemáte povoleno jinak, bude napsaná v jazyku C++, vyjímečně pak v jazyku Python. Ve složkách cpp a python jsou připravená rozhraní pro oba jazyky. Semestrální práce může být ohodnocena celkem až 20 body. 20 bodů ze semestrální práce není dostačující podmínka pro udělení zápočtu - student musí úspěšně napsat zápočtový test na požadovaný minimální počet 10ti bodů.
 
 
+##  Zadání
 
-## Getting started
+1.  Vytvořte datovou strukturu kompaktní suffixové trie, která bude mít následující metody.
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+build   -   vytvorit z textu T datovou strukturu, pridat SL a WL a udelat ji kompaktni???
+match_all
+match_first
+match_last
+compact
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
 
-## Add your files
+Statisticke funkce
+#nodes
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
+
+**Není povoleno používat externí balíčky, které mají stejné nebo podobné datové struktury již implementované.**
+
+2.  Použijte Vaši datovou strukturu pro vyhledávání v textu.
+
+
+3.  Vyplňte report o Vaší semestrální práci
+V souboru REPORT.md vyplňte a sepište všechny vaše myšlenky k semestální práci.
+Report můžete sepsat i v českém či slovenském jazyce. Implementace a grafy jsou ale v jazyce anglickém. 
+
+
+4.  Odevzdejte ve svém repozitáři na GitLabu, vytvořte issue a přiřaďte jej svému opravujícímu (J. Holub)
+Jak na to?
+
+
+Semestrální práci odevzdávejde do 14.12.2025 23:59:59. Za pozdní odevzdání bude udělena penalizace (více v sekci hodnocení)
+
+##  Opakování definic
+# Suffix Tries, Suffix Links, and Weiner Links
+
+### Suffix trie
+
+A **suffix trie** for a string $T$ is a rooted trie that stores **all suffixes** of $T$ as root-to-leaf paths (often using a unique endmarker like “$$ \$ $$” so every suffix is unique).
+
+**Properties**
+
+* Each edge is labeled by a **single character**.
+* The string spelled from the root to a node $v$ is the node’s **path-label**.
+* A pattern $P$ occurs in $T$ **iff** there is a path from the root whose label is $P$. All occurrences correspond to starting indices found under that node’s subtree.
+* Worst-case space is $O(n^2)$ (many explicit nodes), which is why compressed variants (suffix **trees**) are preferred for large inputs.
+
+**Example** for $T=$ `banana$`: the trie contains paths for
 
 ```
-cd existing_repo
-git remote add origin https://gitlab.fit.cvut.cz/NI-EVY/project_templates/b251.git
-git branch -M main
-git push -uf origin main
+banana$, anana$, nana$, ana$, na$, a$, $
 ```
 
-## Integrate with your tools
+---
 
-- [ ] [Set up project integrations](https://gitlab.fit.cvut.cz/NI-EVY/project_templates/b251/-/settings/integrations)
+### Suffix links
 
-## Collaborate with your team
+A **suffix link** “drops the first character.”
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
+**Definition**
+For a node $v$ whose path-label is $S = a\alpha$ (with $a$ a single character), the suffix link of $v$ points to the node whose path-label is $\alpha = S[1:]$. The root’s suffix link points to itself.
 
-## Test and Deploy
+**Intuition / uses**
 
-Use the built-in continuous integration in GitLab.
+* Jump from $S$ to its proper suffix $\alpha$ in $O(1)$, aiding linear-time construction and fast backtracking.
+* In a compressed suffix **tree**, suffix links are defined for internal nodes; in an explicit suffix **trie**, you can define them for all nodes.
+* Aho–Corasick’s “failure” links are suffix links on a pattern trie.
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+---
 
-***
+### Weiner links (left-extension links)
 
-# Editing this README
+A **Weiner link** (also called a *reverse suffix link*) “prepends one character.”
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+**Definition**
+For a node $v$ with path-label $\alpha$ and a character $a$, if the string $a\alpha$ occurs in $T$, there is a Weiner link from $v$ labeled $a$ to the node whose path-label is $a\alpha$.
 
-## Suggestions for a good README
+**Key facts**
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+* Weiner links are the **left-extension counterpart** of suffix links (suffix links remove the first character; Weiner links add one on the left).
+* In a suffix tree, they are central to **Weiner’s right-to-left linear-time construction**: process $T$ from right to left, follow suffix links, and realize new left extensions via Weiner links.
+* Equivalently: there is a Weiner link $v \xrightarrow{a} w$ **iff** the suffix link of $w$ points to $v$.
 
-## Name
-Choose a self-explaining name for your project.
+**Small example** on `banana$`:
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+* Node `ana` has a Weiner link labeled `b` to `bana` (since `bana` occurs), and one labeled `n` to `nana`.
+* Correspondingly, the suffix link of `bana` (drop `b`) goes to `ana`, and the suffix link of `nana` (drop `n`) also goes to `ana`.
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+##  Očekávaná paměťová a časová složitost
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+Dle přednášek je ...
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+##  Hodnocení projektu
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+Hodnocení projektu probíhá ve 3 fázích.
+1.   Implementace prochází automatizovanými testy, které jsou Vám dostupné ve složkách test. Pro spuštění testů 
+```
+spuste takto pro python
+```
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+```
+spuste takto pro cpp
+```
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+    V teto casti muzete ziskat az ... bodu
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+2.  Použití datové struktury pro získání odpovědí na 2. část zadání
+Výstupem se myslí grafy na daných datasetech, které budou viditelné v reportu
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+Pro spuštění automatizovaného vyhodnocení výsledků do grafů spuste skript
+```
+takto
+``` 
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+Tato část je hodnocena ... body
 
-## License
-For open source projects, say how it is licensed.
+3.  Vyhodnocení výsledků a popis implementace v reportu práce.
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+Tato část je hodnocena až 6ti body.
+
+Penalizace
+1.  Vzhled implementačního kódu
+Je důležité aby Váš kód byl dobře čitelný a okomentovaný. Pokud tak nebude, hodnotící si nárokuje snížení celkového počtu bodů o až 3 body.
+2.  Pozdní odevzdání
+Pokud dojde před předchozí omluvy k pozdnímu odevzdání práce, může být celkový počet bodů snížen až do 2 body s každým začínajícím týdnem zpoždění.
