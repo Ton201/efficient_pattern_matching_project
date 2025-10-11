@@ -1,129 +1,126 @@
-#   Semestrální práce Předmětu NI-EVY, semestr B251 - Compact Suffix Trie
 
-Cílem semestrální práce je implementovat a použít suffixovou trii tak, jak je definovaná v přednáškách. Implementace, pokud nemáte povoleno jinak, bude napsaná v jazyku C++, vyjímečně pak v jazyku Python. Ve složkách cpp a python jsou připravená rozhraní pro oba jazyky. Semestrální práce může být ohodnocena celkem až 20 body. 20 bodů ze semestrální práce není dostačující podmínka pro udělení zápočtu - student musí úspěšně napsat zápočtový test na požadovaný minimální počet 10ti bodů.
+# Semester Project for Course NI-EVY, Semester B251 - Suffix Automata for Solving LCF
 
+The goal of the semester project is to implement and use a suffix automaton and the required methods. The implementation, unless otherwise permitted, will be written in C++, or exceptionally in Python. Interfaces for both languages are prepared in the `cpp` and `python` folders. The semester project can be awarded up to 20 points. 20 points from the semester project is not a sufficient condition for obtaining credit — the student must successfully pass the credit test with a required minimum score of 10 p...
 
-##  Zadání
+## Assignment
 
-1.  Vytvořte datovou strukturu kompaktní suffixové trie, která bude mít následující metody.
+**Suffix automaton** is a deterministic finite automaton $M = (Q,\Sigma,\delta,q_0,F)$, where:
+- $Q$ is a non-empty set of states of the automaton
+- $\Sigma$ is a non-empty set of input symbols (alphabet)
+- $\delta$ is the transition function $Q \times \Sigma \rightarrow Q$
+- $q_0$ is the initial state of the automaton
+- $F$ is the set of final states
 
-build   -   vytvorit z textu T datovou strukturu, pridat SL a WL a udelat ji kompaktni???
-match_all
-match_first
-match_last
-compact
+and it holds that for text $T$, $L(M_T) = \{T[i\ldots|T|-1] \mid 0\leq i \leq |T|-1\}$
 
+1. Create a data structure of a suffix automaton $M_T$ for text $T$, which will have the following methods implemented:
 
-Statisticke funkce
-#nodes
+|Method Name       |Description     |
+|------------      |-----     |
+|$build(T)$        | Creates a data structure over the text $T$ |
+|$count(P)$        | Returns the number of occurrences of pattern $P$ in text $T$| 
+|$match\_all(P)$  | Returns all positions $i$ in text $T$, where $T[i\ldots i+\|P\|-1]=P$ | 
+|$match\_first(P)$| Returns the first position $i$ in text $T$, where $T[i\ldots i+\|P\|-1]=P$, -1 if the position is not found | 
+|$match\_last(P)$ | Returns the last position $i$ in text $T$, where $T[i\ldots i+\|P\|-1]=P$, -1 if the position is not found | 
 
+Additionally, each state of the automaton $p$ stores a **suffix_link** $sl(p)$:
 
-**Není povoleno používat externí balíčky, které mají stejné nebo podobné datové struktury již implementované.**
+| | |
+|-           |-     |
+|$label(q)$ | is the longest word $w$ such that $(q_0,w)\vdash^*(q,\varepsilon)$ -> not required to implement |
+|$suffix\_linkl(p)$ | $q$ such that $label(p) = u, label(q) = v$ and $v$ is the longest proper suffix of $u$ |
+|           |     |
 
-2.  Použijte Vaši datovou strukturu pro vyhledávání v textu.
+**!!If part 1 of the assignment is not fulfilled, the following parts cannot be evaluated (it is not allowed to use a suffix automaton implementation from external libraries)!!**
 
+2. Use your suffix automaton for the following problem:
 
-3.  Vyplňte report o Vaší semestrální práci
-V souboru REPORT.md vyplňte a sepište všechny vaše myšlenky k semestální práci.
-Report můžete sepsat i v českém či slovenském jazyce. Implementace a grafy jsou ale v jazyce anglickém. 
+Two words $x$ and $y$ are given over the same alphabet $\Sigma$, and it holds that $|x| \leq |y|$.
+Let $LCF(x,y)$ denote the longest substrings that occur in both word $x$ and word $y$.
+Design and implement an algorithm for $LCF(x,y)$ using the suffix automaton $M$ only for word $x$.
+Return the result as a pair $(I,l)$, where $I$ is the set of positions in text $x$ and $l$ is the length. Analyze the time and memory complexity of your algorithm.
 
+3. Run experiments
 
-4.  Odevzdejte ve svém repozitáři na GitLabu, vytvořte issue a přiřaďte jej svému opravujícímu (J. Holub)
-Jak na to?
+For each dataset, create a suffix automaton, measure the construction time and the size of the automaton given by $|Q|+|\delta|$. Also, for a set of patterns for each dataset, measure the search time and normalize it by the number of occurrences. Record the results in a graph and compare them with naive pattern matching without any preprocessing (measured values in *datasets/naive.csv*).
 
+You may also perform additional experiments as you see fit.
 
-Semestrální práci odevzdávejde do 14.12.2025 23:59:59. Za pozdní odevzdání bude udělena penalizace (více v sekci hodnocení)
+4. Fill out the report on your semester project
 
-##  Opakování definic
-# Suffix Tries, Suffix Links, and Weiner Links
+In the `README.md` file, write and describe all your steps in the implementation and algorithm design.
+The report can be written in Czech, Slovak, or English. Implementation and graphs should remain in English.
 
-### Suffix trie
+5. Submit your project in your GitLab repository, create an issue and assign it to your reviewer (J. Holub).
 
-A **suffix trie** for a string $T$ is a rooted trie that stores **all suffixes** of $T$ as root-to-leaf paths (often using a unique endmarker like “$$ \$ $$” so every suffix is unique).
+How to do it? In your pushed repository on GitLab, click *Issues* in the left panel. Create a *new issue* and in the *Assignees* field, select Jan Holub. Optionally, add a comment and click *Create issue*.
 
-**Properties**
+**!!Submit the semester project by 14.12.2025 23:59:59. Late submission will result in a penalty (see the evaluation section)!!**
 
-* Each edge is labeled by a **single character**.
-* The string spelled from the root to a node $v$ is the node’s **path-label**.
-* A pattern $P$ occurs in $T$ **iff** there is a path from the root whose label is $P$. All occurrences correspond to starting indices found under that node’s subtree.
-* Worst-case space is $O(n^2)$ (many explicit nodes), which is why compressed variants (suffix **trees**) are preferred for large inputs.
+## Project Evaluation
 
-**Example** for $T=$ `banana$`: the trie contains paths for
+The project evaluation takes place in 4 phases.
+1. The implementation undergoes automated tests, which are available in the $test$ folder.
+To run the tests:
 
-```
-banana$, anana$, nana$, ana$, na$, a$, $
-```
+- **Python tests**
 
----
+   For Python, tests are available for pytest. If you don't have it installed:
 
-### Suffix links
+   ```shell
+   pip install pytest
+   ```
+   
+   All tests can be run at once from the python folder:
 
-A **suffix link** “drops the first character.”
+   ```shell
+   PYTHONPATH=. pytest
+   ```
 
-**Definition**
-For a node $v$ whose path-label is $S = a\alpha$ (with $a$ a single character), the suffix link of $v$ points to the node whose path-label is $\alpha = S[1:]$. The root’s suffix link points to itself.
+   Or individually:
 
-**Intuition / uses**
+   ```shell
+   PYTHONPATH=. pytest text/<test_name>
+   ```
 
-* Jump from $S$ to its proper suffix $\alpha$ in $O(1)$, aiding linear-time construction and fast backtracking.
-* In a compressed suffix **tree**, suffix links are defined for internal nodes; in an explicit suffix **trie**, you can define them for all nodes.
-* Aho–Corasick’s “failure” links are suffix links on a pattern trie.
+- **Cpp tests**
+    
+   Clean the environment and compile:
 
----
+   ```shell
+   make clean && make
+   ```
 
-### Weiner links (left-extension links)
+   Run the tests:
 
-A **Weiner link** (also called a *reverse suffix link*) “prepends one character.”
+   ```shell
+   make test
+   ```
 
-**Definition**
-For a node $v$ with path-label $\alpha$ and a character $a$, if the string $a\alpha$ occurs in $T$, there is a Weiner link from $v$ labeled $a$ to the node whose path-label is $a\alpha$.
+   The tests check the output values of the functions from parts 1 and 2 of the assignment.
+   This part is worth 8 points.
 
-**Key facts**
+-------------------------------
+2. Run experiments and process the resulting data into graphs.
 
-* Weiner links are the **left-extension counterpart** of suffix links (suffix links remove the first character; Weiner links add one on the left).
-* In a suffix tree, they are central to **Weiner’s right-to-left linear-time construction**: process $T$ from right to left, follow suffix links, and realize new left extensions via Weiner links.
-* Equivalently: there is a Weiner link $v \xrightarrow{a} w$ **iff** the suffix link of $w$ points to $v$.
+   This part is worth 6 points.
 
-**Small example** on `banana$`:
+3. Evaluation of results and description of the implementation in the project report.
 
-* Node `ana` has a Weiner link labeled `b` to `bana` (since `bana` occurs), and one labeled `n` to `nana`.
-* Correspondingly, the suffix link of `bana` (drop `b`) goes to `ana`, and the suffix link of `nana` (drop `n`) also goes to `ana`.
+   This part is worth up to 6 points.
 
+4. In case of evaluator questions, an oral defense of the semester project may be required.
 
-##  Očekávaná paměťová a časová složitost
+**Penalties**
+1. Code readability  
+It is important that your code is well-readable and well-commented. If not, the evaluator reserves the right to reduce the total score by up to 3 points.
+2. Late submission  
+If the project is submitted late without prior excuse, the total score may be reduced by up to 2 points for each starting week of delay.
 
-Dle přednášek je ...
+## Final Notes
+Yes, AI is powerful enough today to complete all tasks on its own, and the internet is full of ready-made and explained implementations. The purpose of the semester project is for you to try the data structure yourself. Therefore, we expect that you will not excessively use or abuse AI or implementations from the internet.
 
-##  Hodnocení projektu
+If you find any errors that you think everyone should know about, write to the shared email conversation (it will be created no later than with the automated repository creation).
 
-Hodnocení projektu probíhá ve 3 fázích.
-1.   Implementace prochází automatizovanými testy, které jsou Vám dostupné ve složkách test. Pro spuštění testů 
-```
-spuste takto pro python
-```
-
-```
-spuste takto pro cpp
-```
-
-    V teto casti muzete ziskat az ... bodu
-
-2.  Použití datové struktury pro získání odpovědí na 2. část zadání
-Výstupem se myslí grafy na daných datasetech, které budou viditelné v reportu
-
-Pro spuštění automatizovaného vyhodnocení výsledků do grafů spuste skript
-```
-takto
-``` 
-
-Tato část je hodnocena ... body
-
-3.  Vyhodnocení výsledků a popis implementace v reportu práce.
-
-Tato část je hodnocena až 6ti body.
-
-Penalizace
-1.  Vzhled implementačního kódu
-Je důležité aby Váš kód byl dobře čitelný a okomentovaný. Pokud tak nebude, hodnotící si nárokuje snížení celkového počtu bodů o až 3 body.
-2.  Pozdní odevzdání
-Pokud dojde před předchozí omluvy k pozdnímu odevzdání práce, může být celkový počet bodů snížen až do 2 body s každým začínajícím týdnem zpoždění.
+Good luck!

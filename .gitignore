@@ -1,1 +1,11 @@
-datasets/output
+**/__pycache__
+**/.pytest_cache
+**/.vscode
+
+datasets/*/output
+datasets/getpattern.py
+
+solutions
+cpp/bin
+
+**/*.adoc
