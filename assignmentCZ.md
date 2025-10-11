@@ -100,8 +100,9 @@ Pro spuštění testů:
         make test
         ```
 
-    Testy kontrolují výstupní hodnoty funkcí ze zadání v částech 1. a 2. 
-    Tato část je hodnocena 8 body.
+        Testy kontrolují výstupní hodnoty funkcí ze zadání v částech 1. a 2. 
+   
+Tato část je hodnocena 8 body.
 
 -------------------------------
 2.  Spusťte experimenty a výsledná data zpracujte do grafů.
