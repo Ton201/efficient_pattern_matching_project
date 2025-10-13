@@ -45,7 +45,7 @@ Dále každý stav automatu $p$ má uloženou hodnotu **suffix_link** $sl(p)$
 
 3.  Nechte proběhnout experimenty
 
-    Pro každý dataset vytvořte suffixový automat, změřte dobu jeho konstrukce a velikost automatu danou $|Q|+|\delta|$. Dále pro sadu vzorků každého datasetu změřte dobu vyhledávání a normalizujte přes počet výskytů. Výsledky zaneste do grafu a porovnejte s naivním pattern matchingem bez jakéhokoliv předzpracování (změřené hodnoty v *datasets/<dataset_name>/naive.csv*)
+    Pro každý dataset vytvořte suffixový automat, změřte dobu jeho konstrukce a velikost automatu danou $|Q|+|\delta|$. Dále pro sadu vzorků každého datasetu změřte dobu vyhledávání a normalizujte přes počet výskytů. Výsledky zaneste do grafu a porovnejte s naivním pattern matchingem bez jakéhokoliv předzpracování (změřené hodnoty implementace v *C++* v *datasets/<dataset_name>/naive.csv*)
 
     Můžete udělat i další experimenty dle Vašeho uvážení.
 
