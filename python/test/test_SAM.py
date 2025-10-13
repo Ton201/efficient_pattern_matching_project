@@ -124,3 +124,42 @@ def test_sentence_varied_alphabet():
     assert sa.match_all("doge") == []
     assert sa.match_first("doge") == -1
     assert sa.match_last("doge") == -1
+
+def test_states_and_transitions():
+    # --- abracadabra ---
+    T = "abracadabra"
+    n = len(T)
+    sa = SuffixAutomaton()
+    sa.build(T)
+
+    states = sa.n_states()
+    transitions = sa.n_transitions()
+    print(f"[abracadabra] states={states}, transitions={transitions}")
+
+    assert states > 0
+    assert states <= 2 * n - 1
+    assert transitions <= 3 * n - 4  # classical upper bound
+
+    # --- aaaaa ---
+    T = "aaaaa"
+    n = len(T)
+    sa = SuffixAutomaton()
+    sa.build(T)
+
+    states = sa.n_states()
+    transitions = sa.n_transitions()
+    print(f"[aaaaa] states={states}, transitions={transitions}")
+
+    assert states <= 2 * n - 1
+    assert transitions <= 3 * n - 4
+
+    # --- empty ---
+    T = ""
+    sa = SuffixAutomaton()
+    sa.build(T)
+    states = sa.n_states()
+    transitions = sa.n_transitions()
+    print(f"[empty] states={states}, transitions={transitions}")
+
+    assert states == 1           # only the root state
+    assert transitions == 0      # no edges

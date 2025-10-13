@@ -18,6 +18,8 @@ and it holds that for text $T$, $L(M_T) = \{T[i\ldots|T|-1] \mid 0\leq i \leq |T
 
 |Method Name       |Description     |
 |------------      |-----     |
+|$n_states()$          | Returns $|Q|$ |
+|$n_transitions()$     | Returns $|\delta|$ |
 |$build(T)$        | Creates a data structure over the text $T$ |
 |$count(P)$        | Returns the number of occurrences of pattern $P$ in text $T$| 
 |$match\_all(P)$  | Returns all positions $i$ in text $T$, where $T[i\ldots i+\|P\|-1]=P$ | 
@@ -29,7 +31,7 @@ Additionally, each state of the automaton $p$ stores a **suffix_link** $sl(p)$:
 | | |
 |-           |-     |
 |$label(q)$ | is the longest word $w$ such that $(q_0,w)\vdash^*(q,\varepsilon)$ -> not required to implement |
-|$suffix\_linkl(p)$ | $q$ such that $label(p) = u, label(q) = v$ and $v$ is the longest proper suffix of $u$ |
+|$suffix\_link(p)$ | $q$ such that $label(p) = u, label(q) = v$ and $v$ is the longest proper suffix of $u$ |
 |           |     |
 
 **!!If part 1 of the assignment is not fulfilled, the following parts cannot be evaluated (it is not allowed to use a suffix automaton implementation from external libraries)!!**
@@ -43,7 +45,7 @@ Return the result as a pair $(I,l)$, where $I$ is the set of positions in text $
 
 3. Run experiments
 
-For each dataset, create a suffix automaton, measure the construction time and the size of the automaton given by $|Q|+|\delta|$. Also, for a set of patterns for each dataset, measure the search time and normalize it by the number of occurrences. Record the results in a graph and compare them with naive pattern matching without any preprocessing (measured values of *C++* implementation in *datasets/<dataset_name>/naive.csv*).
+For each dataset, create a suffix automaton, measure the construction time and the size of the automaton given by $|Q|$ and $|\delta|$. Also, for a set of patterns for each dataset, measure the search time and normalize it by the number of occurrences. Record the results in a graph and compare them with naive pattern matching without any preprocessing (measured values of *C++* implementation in *datasets/<dataset_name>/naive.csv*).
 
 You may also perform additional experiments as you see fit.
 

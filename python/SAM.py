@@ -37,11 +37,18 @@ class SuffixAutomaton:
     self._alphabet = set()
 
 
-  def size(self):
+  def n_states(self):
     """
-    Build the automaton from text T.
+    Get number of states in M.
     """
-    raise NotImplementedError("TODO: implement size()")
+    raise NotImplementedError("TODO: implement n_states()")
+
+
+  def n_transitions(self):
+    """
+    Get number of transitions in M.
+    """
+    raise NotImplementedError("TODO: implement n_transitions()")
 
 
   def build(self, T):

@@ -32,8 +32,11 @@ public:
     SuffixAutomaton();
     ~SuffixAutomaton();
     
-    // Return total size = number of states + number of transitions
-    size_t size() const;
+    int n_states() const;
+    // Get number of states in M.
+
+    int n_transitions() const;
+    // Get number of transitions in M.
 
     // Build the automaton from text T. Should reset previous content.
     void build(const std::string& T);

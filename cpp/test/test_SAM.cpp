@@ -141,40 +141,57 @@ static void test_sentence_varied_alphabet() {
     assert(sa.match_last ("doge") == -1);
 }
 
-static void test_size_measurement() {
+static void test_states_and_transitions() {
     {
+        const std::string T = "abracadabra";
+        const size_t n = T.size();
         SuffixAutomaton sa;
-        sa.build("abracadabra");
-        size_t sz = sa.size();
-        std::cout << "[abracadabra] SAM size (states + transitions): " << sz << "\n";
+        sa.build(T);
 
-        // Rough invariant: #states <= 2 * n, and #transitions < 3 * n
-        size_t n = 11; // length of "abracadabra"
-        assert(sa.size() > 0);
-        assert(sa.size() <= 5 * n);  // generous upper bound
+        size_t states = sa.n_states();
+        size_t transitions = sa.n_transitions();
+        std::cout << "[abracadabra] states=" << states 
+                  << ", transitions=" << transitions << "\n";
+
+        assert(states > 0);
+        assert(states <= 2 * n - 1);
+        if (n >= 2) {
+            assert(transitions <= 3 * n - 4);
+        }
     }
 
     {
+        const std::string T = "aaaaa";
+        const size_t n = T.size();
         SuffixAutomaton sa;
-        sa.build("aaaaa");
-        size_t sz = sa.size();
-        std::cout << "[aaaaa] SAM size: " << sz << "\n";
+        sa.build(T);
 
-        // Exact: 6 states (2 * n - 1), transitions = 5 (chain)
-        // But clones may reduce transitions slightly. We just check range.
-        assert(sz > 0);
-        assert(sz <= 5 * 5);
+        size_t states = sa.n_states();
+        size_t transitions = sa.n_transitions();
+        std::cout << "[aaaaa] states=" << states 
+                  << ", transitions=" << transitions << "\n";
+
+        assert(states <= 2 * n - 1);
+        if (n >= 2) {
+            assert(transitions <= 3 * n - 4);
+        }
     }
 
     {
+        const std::string T = "";
         SuffixAutomaton sa;
-        sa.build("");
-        size_t sz = sa.size();
-        std::cout << "[empty] SAM size: " << sz << "\n";
-        // empty string should produce 1 state (root) and 0 transitions
-        assert(sz == 1);
+        sa.build(T);
+
+        size_t states = sa.n_states();
+        size_t transitions = sa.n_transitions();
+        std::cout << "[empty] states=" << states 
+                  << ", transitions=" << transitions << "\n";
+
+        assert(states == 1);      // only root state
+        assert(transitions == 0); // no transitions
     }
 }
+
 
 int main() {
     std::cout << "Running C++ SAM tests...\n";
@@ -186,7 +203,7 @@ int main() {
     test_empty_pattern_convention();
     test_rebuild_resets_state();
     test_sentence_varied_alphabet();
-    test_size_measurement();
+    test_states_and_transitions();
 
     std::cout << "All tests passed successfully.\n";
     return 0;

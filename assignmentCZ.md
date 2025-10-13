@@ -18,6 +18,8 @@ a platí, že pro text T, $L(M_T) = \{T[i\ldots|T|-1] | 0\leq i \leq |T|-1\}$
 
 |Název metody           |Popis     |
 |------------           |-----     |
+|$n_states()$          | Vrátí $|Q|$ |
+|$n_transitions()$     | Vrátí $|\delta|$ |
 |$build(T)$     | Vytvoří datovou strukturu nad textem $T$ |
 |$count(P)$       | Vrátí počet výskytů vzorku P v textu $T$| 
 |$match\_all(P)$       | Vrátí všechny pozice $i$ v textu $T$, kde $T[i\ldots i+\|P\|-1]=P$ | 
@@ -30,7 +32,7 @@ Dále každý stav automatu $p$ má uloženou hodnotu **suffix_link** $sl(p)$
 | | |
 |-           |-     |
 |$label(q)$ | je nejdelší slovo w takové, že $(q_0,w)\vdash^*(q,\varepsilon)$  -> není třeba implementovat
-|$suffix\_linkl(p)$         | $q$ takove, ze $label(p) =u, label(q) = v$ a $v$ je nejdelsi vlastni suffix $u$
+|$suffix\_link(p)$         | $q$ takove, ze $label(p) =u, label(q) = v$ a $v$ je nejdelší vlastní suffix $u$
 |           |     |
 
 
@@ -45,7 +47,7 @@ Dále každý stav automatu $p$ má uloženou hodnotu **suffix_link** $sl(p)$
 
 3.  Nechte proběhnout experimenty
 
-    Pro každý dataset vytvořte suffixový automat, změřte dobu jeho konstrukce a velikost automatu danou $|Q|+|\delta|$. Dále pro sadu vzorků každého datasetu změřte dobu vyhledávání a normalizujte přes počet výskytů. Výsledky zaneste do grafu a porovnejte s naivním pattern matchingem bez jakéhokoliv předzpracování (změřené hodnoty implementace v *C++* v *datasets/<dataset_name>/naive.csv*)
+    Pro každý dataset vytvořte suffixový automat, změřte dobu jeho konstrukce a velikost automatu danou $|Q|$ a $|\delta|$. Dále pro sadu vzorků každého datasetu změřte dobu vyhledávání a normalizujte přes počet výskytů. Výsledky zaneste do grafu a porovnejte s naivním pattern matchingem bez jakéhokoliv předzpracování (změřené hodnoty implementace v *C++* v *datasets/<dataset_name>/naive.csv*)
 
     Můžete udělat i další experimenty dle Vašeho uvážení.
 

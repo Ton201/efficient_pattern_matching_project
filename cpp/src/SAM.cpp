@@ -15,8 +15,14 @@ State* State::gotoNext(char c) {
 SuffixAutomaton::SuffixAutomaton() = default;
 SuffixAutomaton::~SuffixAutomaton() = default;
 
-size_t SuffixAutomaton::size() const {
-    throw std::logic_error("TODO: implement size()");
+
+
+int SuffixAutomaton::n_states() const{
+    throw std::logic_error("TODO: implement n_states()");
+}
+
+int SuffixAutomaton::n_transitions() const{
+    throw std::logic_error("TODO: implement n_states()");
 }
 
 void SuffixAutomaton::build(const std::string& T) {
