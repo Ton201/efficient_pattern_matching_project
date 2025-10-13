@@ -2,7 +2,7 @@
 
 # Tools & flags
 CXX       := g++
-CXXFLAGS  := -std=c++17 -Wall -Wextra -O2
+CXXFLAGS  := -std=c++20 -Wall -Wextra -O2
 # Put include dirs in CPPFLAGS (and define SRC_DIR before using it!)
 SRC_DIR   := src
 TEST_DIR  := test
