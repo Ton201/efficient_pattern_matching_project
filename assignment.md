@@ -43,7 +43,7 @@ Return the result as a pair $(I,l)$, where $I$ is the set of positions in text $
 
 3. Run experiments
 
-For each dataset, create a suffix automaton, measure the construction time and the size of the automaton given by $|Q|+|\delta|$. Also, for a set of patterns for each dataset, measure the search time and normalize it by the number of occurrences. Record the results in a graph and compare them with naive pattern matching without any preprocessing (measured values in *datasets/naive.csv*).
+For each dataset, create a suffix automaton, measure the construction time and the size of the automaton given by $|Q|+|\delta|$. Also, for a set of patterns for each dataset, measure the search time and normalize it by the number of occurrences. Record the results in a graph and compare them with naive pattern matching without any preprocessing (measured values in *datasets/<dataset_name>/naive.csv*).
 
 You may also perform additional experiments as you see fit.
 

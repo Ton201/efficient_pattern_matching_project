@@ -9,3 +9,5 @@ solutions
 cpp/bin
 
 **/*.adoc
+sam_*.csv
+**/sam.csv

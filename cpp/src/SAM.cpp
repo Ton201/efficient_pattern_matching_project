@@ -15,6 +15,10 @@ State* State::gotoNext(char c) {
 SuffixAutomaton::SuffixAutomaton() = default;
 SuffixAutomaton::~SuffixAutomaton() = default;
 
+size_t SuffixAutomaton::size() const {
+    throw std::logic_error("TODO: implement size()");
+}
+
 void SuffixAutomaton::build(const std::string& T) {
     throw std::logic_error("TODO: implement build()");
 }
@@ -34,3 +38,4 @@ int SuffixAutomaton::match_last(const std::string& P) const {
 std::vector<int> SuffixAutomaton::match_all(const std::string& P) const {
     throw std::logic_error("TODO: implement match_all()");
 }
+

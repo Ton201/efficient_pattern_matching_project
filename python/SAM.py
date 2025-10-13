@@ -37,6 +37,13 @@ class SuffixAutomaton:
     self._alphabet = set()
 
 
+  def size(self):
+    """
+    Build the automaton from text T.
+    """
+    raise NotImplementedError("TODO: implement size()")
+
+
   def build(self, T):
     """
     Build the automaton from text T.
