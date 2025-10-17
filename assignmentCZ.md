@@ -21,7 +21,7 @@ a platí, že pro text T, $L(M_T) = \{T[i\ldots|T|-1] | 0\leq i \leq |T|-1\}$
 |$n\_{states()}$          | Vrátí $\|Q\|$ |
 |$n\_{transitions()}$     | Vrátí $\|\delta\|$ |
 |$build(T)$     | Vytvoří datovou strukturu nad textem $T$ |
-|$count(P)$       | Vrátí počet výskytů vzorku P v textu $T$| 
+|$count(P)$       | Vrátí počet výskytů vzorku $P$ v textu $T$| 
 |$match\_all(P)$       | Vrátí všechny pozice $i$ v textu $T$, kde $T[i\ldots i+\|P\|-1]=P$ | 
 |$match\_first(P)$       | Vrátí první pozici $i$ v textu $T$, kde $T[i\ldots i+\|P\|-1]=P$, -1 pokud pozici nenalezne | 
 |$match\_last(P)$       | Vrátí poslední pozici $i$ v textu $T$, kde $T[i\ldots i+\|P\|-1]=P$, -1 pokud pozici nenalezne | 
