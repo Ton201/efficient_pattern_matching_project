@@ -18,8 +18,8 @@ a platí, že pro text T, $L(M_T) = \{T[i\ldots|T|-1] | 0\leq i \leq |T|-1\}$
 
 |Název metody           |Popis     |
 |------------           |-----     |
-|$n\_states()$          | Vrátí $|Q|$ |
-|$n\_transitions()$     | Vrátí $|\delta|$ |
+|$n\_states()$          | Vrátí $ |Q| $ |
+|$n\_transitions()$     | Vrátí $ |\delta| $ |
 |$build(T)$     | Vytvoří datovou strukturu nad textem $T$ |
 |$count(P)$       | Vrátí počet výskytů vzorku P v textu $T$| 
 |$match\_all(P)$       | Vrátí všechny pozice $i$ v textu $T$, kde $T[i\ldots i+\|P\|-1]=P$ | 
