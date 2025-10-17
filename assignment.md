@@ -30,7 +30,7 @@ Additionally, each state of the automaton $p$ stores a **suffix_link** $sl(p)$:
 
 | | |
 |-           |-     |
-|$label(q)$ | is the longest word $w$ such that $(q_0,w)\vdash^*(q,\varepsilon)$ -> not required to implement |
+|$label(q)$ | is the longest word $w$ such that $(q_0,w)\vdash^*(q,\varepsilon)$ -> not required to implemented |
 |$suffix\_link(p)$ | $q$ such that $label(p) = u, label(q) = v$ and $v$ is the longest proper suffix of $u$ |
 |           |     |
 
