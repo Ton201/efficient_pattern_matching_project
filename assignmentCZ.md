@@ -31,7 +31,7 @@ Dále každý stav automatu $p$ má uloženou hodnotu **suffix_link** $sl(p)$
 
 | | |
 |-           |-     |
-|$label(q)$ | je nejdelší slovo w takové, že $(q_0,w)\vdash^*(q,\varepsilon)$  -> není třeba implementovat
+|$label(q)$ | je nejdelší slovo $w$ takové, že $(q_0,w)\vdash^*(q,\varepsilon)$  -> není třeba implementovat
 |$suffix\_link(p)$         | $q$ takove, ze $label(p) =u, label(q) = v$ a $v$ je nejdelší vlastní suffix $u$
 |           |     |
 
