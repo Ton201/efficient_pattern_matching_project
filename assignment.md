@@ -18,7 +18,7 @@ and it holds that for text $T$, $L(M_T) = \{T[i\ldots|T|-1] \mid 0\leq i \leq |T
 
 |Method Name       |Description     |
 |------------      |-----     |
-|$n\_states()$          | Returns $ |Q| $ |
+|$n\_{states()}$          | Returns $ |Q| $ |
 |$n\_transitions()$     | Returns $ |\delta| $ |
 |$build(T)$        | Creates a data structure over the text $T$ |
 |$count(P)$        | Returns the number of occurrences of pattern $P$ in text $T$| 
