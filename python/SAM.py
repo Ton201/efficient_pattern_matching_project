@@ -8,7 +8,8 @@ class State:
         self.suffix_link = None
         self.next = {} # dictionary: keys = characters, values = states you transition to on that character
         self.length = 0
-        self.final = False 
+        self.final = False
+        self.occurence = 0
     def goto(self, c):
         """Return destination state id on character `c`, or None if absent."""
         return self.next.get(c, None)
@@ -78,6 +79,16 @@ class SuffixAutomaton:
         while p != 0:
             self.states[p].final = True
             p = self.states[p].suffix_link
+        # propagate occurence counts
+        # get order of states sorted by length decreasing
+        order = sorted(range(len(self.states)),
+               key=lambda i: self.states[i].length,
+               reverse=True)
+        # add up the occurences followinf sl
+        for state_index in order:
+            link = self.states[state_index].suffix_link
+            if link is not None:
+                self.states[link].occurence += self.states[state_index].occurence
         return self
         # raise NotImplementedError("TODO: implement build()")
     
@@ -90,6 +101,7 @@ class SuffixAutomaton:
         self.states.append(State())
         # set the depth of the state
         self.states[new].length = self.states[self.last].length + 1
+        self.states[new].occurence = 1
         # set pointer to the last added state
         p = self.last
         while p is not None and letter not in self.states[p].next.keys():
@@ -108,9 +120,8 @@ class SuffixAutomaton:
                 clone = len(self.states)
                 self.states.append(State())
                 self.states[clone].length = self.states[p].length + 1
-                # copy transitions from OG node q - TODO might replace for loop with dict.deepcopy()
-                # for b in self._alphabet:
-                #     clone.next[b] = q.next[b]
+                # occurence is 0 in State().__init__ by default
+                # copy transitions from OG node q
                 self.states[clone].next = self.states[q].next.copy()
                 self.states[new].suffix_link = clone
                 self.states[clone].suffix_link = self.states[q].suffix_link # clone inherits suffix links from OG node
@@ -126,6 +137,13 @@ class SuffixAutomaton:
         """
         Number of occurrences of pattern P in the built text.
         """
+        # start from the innitial state and propagate though pattern P
+        v = 0
+        for letter in P:
+            if letter not in self.states[v].next.keys():
+                return 0
+            v = self.states[v].next[letter]
+        return self.states[v].occurence
         raise NotImplementedError("TODO: implement count()")
     
   
