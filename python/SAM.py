@@ -49,6 +49,10 @@ class SuffixAutomaton:
         """
         Get number of transitions in M.
         """
+        trans = 0
+        for state in self.states:
+                trans += len(state.next.keys)
+        return trans
         raise NotImplementedError("TODO: implement n_transitions()")
   
   
