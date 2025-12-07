@@ -8,7 +8,7 @@ class State:
         self.suffix_link = None
         self.next = {} # dictionary: keys = characters, values = states you transition to on that character
         self.length = 0
-        self.initial = False 
+        self.final = False 
     def goto(self, c):
         """Return destination state id on character `c`, or None if absent."""
         return self.next.get(c, None)
@@ -35,6 +35,7 @@ class SuffixAutomaton:
     def __init__(self):
         self.states = [State()]
         self._alphabet = set()
+        self.last = 0
   
   
     def n_states(self):
@@ -63,55 +64,63 @@ class SuffixAutomaton:
         self._alphabet = set(T)
         # reset automaton
         self.states = [State()]
-        # n = len(T) # it was meant for iterating through for-cycle
-
         # set the last pointer to the innitial state
         # length 0 and sl = None set when initialiying the SAM
-        last = 0
+        self.last = 0
         # EXTEND:
         # itterate thought the text T and extend the SAM
         # 
         for letter in T:
-            # create a new state
-            new = State()
-            # set the depth of the state
-            new.length = self.states[last].length + 1
-            # set pointer to the last added state
-            p = last
-            while not (p == 0 and letter not in self.states[p].next.keys()):
-                self.states[p].next[letter] = new # new is not an index but a node!
-                p = self.states[p].suffix_link
-            # if p is initial state suffix link of the first node is an initial state
-            if p is None:
-                new.suffix_link = 0
-            else:
-                q = self.states[p].next[letter]
-                # if q is the next node
-                if self.states[p].length + 1 == self.states[p].length:
-                    new.suffix_link = q # q is not an index but a node!
-                # else need a clone
-                else:
-                    clone = State()
-                    clone.length = q.length + 1
-                    # copy transitions from OG node q
-                    for b in self._alphabet:
-                        clone.next[b] = q.next[b]
-                    new.suffix_link = clone
-                    clone.suffix_link = q.suffix_link # clone inherits suffix links from OG node
-                    q.suffix_link = clone
-                    while (p is None and letter not in self.states[p].next.keys()):
-                        self.states[p].next[letter] = clone # clone is not an index but a node!
-                        p = self.states[p].suffix_link
-            self.states.append(new)
-            last = new
+            self._extend(letter)
         # end of extension
-        p = last
-        while p is not None:
+        # mark final states
+        p = self.last
+        while p != 0:
             self.states[p].final = True
             p = self.states[p].suffix_link
         return self
         # raise NotImplementedError("TODO: implement build()")
     
+
+    def _extend(self, letter):
+        # create a new state
+        # firstly pointer in SAM states list
+        new = len(self.states)
+        # secondly to said state
+        self.states.append(State())
+        # set the depth of the state
+        self.states[new].length = self.states[self.last].length + 1
+        # set pointer to the last added state
+        p = self.last
+        while p is not None and letter not in self.states[p].next.keys():
+            self.states[p].next[letter] = new # new is not an index but a node!
+            p = self.states[p].suffix_link
+        # if p is initial state suffix link of the first node is an initial state
+        if p is None:
+                self.states[new].suffix_link = 0
+        else:
+            q = self.states[p].next[letter]
+            # if q is the next node
+            if self.states[p].length + 1 == self.states[q].length:
+                self.states[new].suffix_link = q # q is an index
+            # else need a clone
+            else:
+                clone = len(self.states)
+                self.states.append(State())
+                self.states[clone].length = self.states[p].length + 1
+                # copy transitions from OG node q - TODO might replace for loop with dict.deepcopy()
+                # for b in self._alphabet:
+                #     clone.next[b] = q.next[b]
+                self.states[clone].next = self.states[q].next.copy()
+                self.states[new].suffix_link = clone
+                self.states[clone].suffix_link = self.states[q].suffix_link # clone inherits suffix links from OG node
+                self.states[q].suffix_link = clone
+                # redirect transitions to point to clone
+                while p is not None and self.states[p].next[letter] == q:
+                    self.states[p].next[letter] = clone # clone is not an index but a node!
+                    p = self.states[p].suffix_link
+        # update 'last' pointer
+        self.last = new
   
     def count(self, P) -> int:
         """
