@@ -51,7 +51,7 @@ class SuffixAutomaton:
         """
         trans = 0
         for state in self.states:
-                trans += len(state.next.keys)
+                trans += len(state.next.keys())
         return trans
         raise NotImplementedError("TODO: implement n_transitions()")
   
@@ -61,26 +61,31 @@ class SuffixAutomaton:
         Build the automaton from text T.
         """
         self._alphabet = set(T)
-        n = len(T)
+        # reset automaton
+        self.states = [State()]
+        # n = len(T) # it was meant for iterating through for-cycle
+
         # set the last pointer to the innitial state
         # length 0 and sl = None set when initialiying the SAM
-        last = None
+        last = 0
+        # EXTEND:
         # itterate thought the text T and extend the SAM
+        # 
         for letter in T:
             # create a new state
             new = State()
             # set the depth of the state
-            len = self.states[last].length + 1
+            new.length = self.states[last].length + 1
             # set pointer to the last added state
             p = last
-            while not (p is None and letter not in self.states[p].next.keys)
+            while not (p == 0 and letter not in self.states[p].next.keys()):
                 self.states[p].next[letter] = new # new is not an index but a node!
                 p = self.states[p].suffix_link
             # if p is initial state suffix link of the first node is an initial state
             if p is None:
                 new.suffix_link = 0
             else:
-                q = self.states[p].next[c]
+                q = self.states[p].next[letter]
                 # if q is the next node
                 if self.states[p].length + 1 == self.states[p].length:
                     new.suffix_link = q # q is not an index but a node!
@@ -94,10 +99,10 @@ class SuffixAutomaton:
                     new.suffix_link = clone
                     clone.suffix_link = q.suffix_link # clone inherits suffix links from OG node
                     q.suffix_link = clone
-                    while (p is None and letter not in self.states[p].next.keys):
+                    while (p is None and letter not in self.states[p].next.keys()):
                         self.states[p].next[letter] = clone # clone is not an index but a node!
                         p = self.states[p].suffix_link
-            self.states.append(current)
+            self.states.append(new)
             last = new
         # end of extension
         p = last
