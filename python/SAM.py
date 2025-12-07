@@ -10,6 +10,10 @@ class State:
         self.length = 0
         self.final = False
         self.occurence = 0
+        self.first_pos = None
+        self.last_pos = None
+
+
     def goto(self, c):
         """Return destination state id on character `c`, or None if absent."""
         return self.next.get(c, None)
@@ -71,8 +75,8 @@ class SuffixAutomaton:
         # EXTEND:
         # itterate thought the text T and extend the SAM
         # 
-        for letter in T:
-            self._extend(letter)
+        for i, letter in enumerate(T):
+            self._extend(letter, pos=i)
         # end of extension
         # mark final states
         p = self.last
@@ -80,20 +84,37 @@ class SuffixAutomaton:
             self.states[p].final = True
             p = self.states[p].suffix_link
         # propagate occurence counts
+        # Core idea: every occurrence of a string in v gives an occurrence of 
+        # its suffix in link, ending at the same index, so min/max end positions
+        # propagate the same way as counts.
+        # 
         # get order of states sorted by length decreasing
         order = sorted(range(len(self.states)),
                key=lambda i: self.states[i].length,
                reverse=True)
-        # add up the occurences followinf sl
+        # follow suffix links
         for state_index in order:
             link = self.states[state_index].suffix_link
             if link is not None:
+                # add up the occurences
                 self.states[link].occurence += self.states[state_index].occurence
+                # first position
+                if self.states[link].first_pos is None:
+                    self.states[link].first_pos = self.states[state_index].first_pos
+                else:
+                    self.states[link].first_pos = min(self.states[link].first_pos,
+                                                      self.states[state_index].first_pos)
+                # last position
+                if self.states[link].last_pos is None:
+                    self.states[link].last_pos = self.states[state_index].last_pos
+                else:
+                    self.states[link].last_pos = max(self.states[link].last_pos,
+                                                     self.states[state_index].last_pos)
         return self
         # raise NotImplementedError("TODO: implement build()")
     
 
-    def _extend(self, letter):
+    def _extend(self, letter, pos):
         # create a new state
         # firstly pointer in SAM states list
         new = len(self.states)
@@ -102,6 +123,8 @@ class SuffixAutomaton:
         # set the depth of the state
         self.states[new].length = self.states[self.last].length + 1
         self.states[new].occurence = 1
+        self.states[new].first_pos = pos
+        self.states[new].last_pos = pos
         # set pointer to the last added state
         p = self.last
         while p is not None and letter not in self.states[p].next.keys():
@@ -120,7 +143,13 @@ class SuffixAutomaton:
                 clone = len(self.states)
                 self.states.append(State())
                 self.states[clone].length = self.states[p].length + 1
+                #
+                # clone does not add an end posstion
                 # occurence is 0 in State().__init__ by default
+                #
+                # clone inherits possitions from q
+                self.states[clone].first_pos = self.states[q].first_pos
+                self.states[clone].last_pos  = self.states[q].last_pos
                 # copy transitions from OG node q
                 self.states[clone].next = self.states[q].next.copy()
                 self.states[new].suffix_link = clone
@@ -138,12 +167,12 @@ class SuffixAutomaton:
         Number of occurrences of pattern P in the built text.
         """
         # start from the innitial state and propagate though pattern P
-        v = 0
+        state_id = 0
         for letter in P:
-            if letter not in self.states[v].next.keys():
+            if letter not in self.states[state_id].next.keys():
                 return 0
-            v = self.states[v].next[letter]
-        return self.states[v].occurence
+            state_id = self.states[state_id].next[letter]
+        return self.states[state_id].occurence
         raise NotImplementedError("TODO: implement count()")
     
   
@@ -151,13 +180,33 @@ class SuffixAutomaton:
         """
         Starting index of the first (leftmost) occurrence, or -1 if absent.
         """
-        raise NotImplementedError("TODO: implement match_first()")
+        # start from the innitial state and propagate though pattern P
+        state_id = 0
+        for letter in P:
+            if letter not in self.states[state_id].next.keys():
+                return -1
+            state_id = self.states[state_id].next[letter]
+        end = self.states[state_id].first_pos
+        if end is None:
+            return -1
+        return end - len(P) + 1
+        raiseNotImplementedError("TODO: implement match_first()")
     
   
     def match_last(self, P) -> int:
         """
         Starting index of the last (rightmost) occurrence, or -1 if absent.
         """
+        # start from the innitial state and propagate though pattern P
+        state_id = 0
+        for letter in P:
+            if letter not in self.states[state_id].next.keys():
+                return -1
+            state_id = self.states[state_id].next[letter]
+        end = self.states[state_id].last_pos
+        if end is None:
+            return -1
+        return end - len(P) + 1
         raise NotImplementedError("TODO: implement match_last()")
     
   
