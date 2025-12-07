@@ -41,6 +41,7 @@ class SuffixAutomaton:
         """
         Get number of states in M.
         """
+        return len(self.states)
         raise NotImplementedError("TODO: implement n_states()")
   
   
