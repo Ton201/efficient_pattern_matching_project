@@ -9,9 +9,18 @@ class State:
         self.next = {} # dictionary: keys = characters, values = states you transition to on that character
         self.length = 0
         self.final = False
+        # sttributes for count(), match_first(), match_last()
         self.occurence = 0
         self.first_pos = None
         self.last_pos = None
+        # atributes for match_all()
+        self.state_at_pos = [] # for each i: state after reading T[:i+1]
+        self.children = [] # suffix-link tree adjacency list
+        # DFS intervals of suffix-link tree
+        self.tin = []            
+        self.tout = []
+        # DFS time counter
+        self._time = 0           
 
 
     def goto(self, c):
@@ -69,6 +78,7 @@ class SuffixAutomaton:
         self._alphabet = set(T)
         # reset automaton
         self.states = [State()]
+        self.state_at_pos = []
         # set the last pointer to the innitial state
         # length 0 and sl = None set when initialiying the SAM
         self.last = 0
@@ -77,6 +87,7 @@ class SuffixAutomaton:
         # 
         for i, letter in enumerate(T):
             self._extend(letter, pos=i)
+            self.state_at_pos.append(self.last)
         # end of extension
         # mark final states
         p = self.last
@@ -110,6 +121,7 @@ class SuffixAutomaton:
                 else:
                     self.states[link].last_pos = max(self.states[link].last_pos,
                                                      self.states[state_index].last_pos)
+        self._build_suffix_tree_info()
         return self
         # raise NotImplementedError("TODO: implement build()")
     
@@ -214,5 +226,58 @@ class SuffixAutomaton:
         """
         Return all starting positions of pattern P in the text.
         """
-        raise NotImplementedError("TODO: implement match_all()")
-  
+        # simple SAM-based approach would crush on 'mono' dataset ~ O(n^2) time and memory
+        # let's reverse the idea of suffix link
+        #   suffix links lead to longest propper suffixes of the string
+        #   there for in the opposite dirrection, we can all strings containing siad string in suffix
+        # 
+        # efficient way to navigate suffix links in opposite direction = tree structure + depth-first-search
+        state_id = 0
+        for letter in P:
+            if letter not in self.states[state_id].next.keys():
+                return -1
+            state_id = self.states[state_id].next[letter]
+
+        result = []
+        l = len(P)
+        t_in = self.tin[state_id]
+        t_out = self.tout[state_id]
+        # search suffix link tree
+        for i, st in enumerate(self.states[state_id].state_at_pos):
+            if t_in <= tin[st] <= t_out:
+                result.append(i - m + 1)
+        return result.sort()
+        NotImplementedError("TODO: implement match_all()")
+        
+    def _build_suffix_tree_info(self):
+        '''
+        Builds suffix link tree and runs DFS on in
+        '''
+        n_states = len(self.states)
+        # children list: parent = suffix_link, child = state
+        self.children = [[] for _ in range(n_states)]
+        for state_id in range(1, n_states):     # skip 0 because its suffix_link is None
+            link = self.states[state_id].suffix_link
+            if link is not None:
+                self.children[link].append(state_id)
+        # prepare tin/tout arrays
+        self.tin = [0] * n_states
+        self.tout = [0] * n_states
+        self._time = 0
+
+        # run DFS from root
+        self._dfs_suffix_tree(0)
+
+
+    def _dfs_suffix_tree(self, state_id):
+        self._time += 1
+        self.tin[state_id]
+        for branch in self.children[state_id]:
+            self._dfs_suffix_tree(branch)
+        self._time += 1
+        self.tout[state_id] = self._time
+
+
+
+
+
