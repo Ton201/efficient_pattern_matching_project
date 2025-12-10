@@ -5,7 +5,7 @@ from LCF import LCF
 
 def test_basic_cases():
     x = "abracadabra"
-    y = "cadabracad"
+    y = "cadabraca"
 
     positions, length = LCF(x, y)
 
@@ -51,7 +51,7 @@ def test_empty_strings():
 def test_multiple_longest_common_substrings():
     # Two possible longest substrings: "abc" and "bca" at three positions
     x = "abcabc"
-    y = "bcaxyz"
+    y = "abcxbca"
 
     positions, length = LCF(x, y)
     assert length == 3
