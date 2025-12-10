@@ -13,16 +13,8 @@ class State:
         self.occurence = 0
         self.first_pos = None
         self.last_pos = None
-        # atributes for match_all()
-        self.state_at_pos = [] # for each i: state after reading T[:i+1]
-        self.children = [] # suffix-link tree adjacency list
-        # DFS intervals of suffix-link tree
-        self.tin = []            
-        self.tout = []
-        # DFS time counter
-        self._time = 0           
 
-
+        
     def goto(self, c):
         """Return destination state id on character `c`, or None if absent."""
         return self.next.get(c, None)
@@ -50,7 +42,16 @@ class SuffixAutomaton:
         self.states = [State()]
         self._alphabet = set()
         self.last = 0
-  
+        # atributes for match_all()
+        self.state_at_pos = [] # for each i: state after reading T[:i+1]
+        self.children = [] # suffix-link tree adjacency list
+        # DFS intervals of suffix-link tree
+        self.tin = []            
+        self.tout = []
+        # DFS time counter
+        self._time = 0           
+
+
   
     def n_states(self):
         """
@@ -178,6 +179,9 @@ class SuffixAutomaton:
         """
         Number of occurrences of pattern P in the built text.
         """
+        # if patern is empty string, do not be fancy
+        if P == "":
+            return 0
         # start from the innitial state and propagate though pattern P
         state_id = 0
         for letter in P:
@@ -192,6 +196,9 @@ class SuffixAutomaton:
         """
         Starting index of the first (leftmost) occurrence, or -1 if absent.
         """
+        # case empty string
+        if P == "":
+            return -1
         # start from the innitial state and propagate though pattern P
         state_id = 0
         for letter in P:
@@ -209,6 +216,9 @@ class SuffixAutomaton:
         """
         Starting index of the last (rightmost) occurrence, or -1 if absent.
         """
+         # case empty string
+        if P == "":
+            return -1
         # start from the innitial state and propagate though pattern P
         state_id = 0
         for letter in P:
@@ -232,10 +242,14 @@ class SuffixAutomaton:
         #   there for in the opposite dirrection, we can all strings containing siad string in suffix
         # 
         # efficient way to navigate suffix links in opposite direction = tree structure + depth-first-search
+        
+        # case empty string
+        if P == "":
+            return []
         state_id = 0
         for letter in P:
             if letter not in self.states[state_id].next.keys():
-                return -1
+                return []
             state_id = self.states[state_id].next[letter]
 
         result = []
@@ -243,10 +257,11 @@ class SuffixAutomaton:
         t_in = self.tin[state_id]
         t_out = self.tout[state_id]
         # search suffix link tree
-        for i, st in enumerate(self.states[state_id].state_at_pos):
-            if t_in <= tin[st] <= t_out:
-                result.append(i - m + 1)
-        return result.sort()
+        for i, st in enumerate(self.state_at_pos):
+            if t_in <= self.tin[st] <= t_out:
+                result.append(i - l + 1)
+        result.sort()
+        return result
         NotImplementedError("TODO: implement match_all()")
         
     def _build_suffix_tree_info(self):
@@ -271,7 +286,7 @@ class SuffixAutomaton:
 
     def _dfs_suffix_tree(self, state_id):
         self._time += 1
-        self.tin[state_id]
+        self.tin[state_id] = self._time
         for branch in self.children[state_id]:
             self._dfs_suffix_tree(branch)
         self._time += 1
