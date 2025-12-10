@@ -96,7 +96,7 @@ class SuffixAutomaton:
             self.states[p].final = True
             p = self.states[p].suffix_link
         # propagate occurence counts
-        # Core idea: every occurrence of a string in v gives an occurrence of 
+        # Core idea: every occurrence of a string in said state gives an occurrence of 
         # its suffix in link, ending at the same index, so min/max end positions
         # propagate the same way as counts.
         # 
@@ -179,7 +179,7 @@ class SuffixAutomaton:
         """
         Number of occurrences of pattern P in the built text.
         """
-        # if patern is empty string, do not be fancy
+        # if patern is empty string, return 0
         if P == "":
             return 0
         # start from the innitial state and propagate though pattern P
@@ -262,7 +262,6 @@ class SuffixAutomaton:
                 result.append(i - l + 1)
         result.sort()
         return result
-        NotImplementedError("TODO: implement match_all()")
         
     def _build_suffix_tree_info(self):
         '''
@@ -284,14 +283,30 @@ class SuffixAutomaton:
         self._dfs_suffix_tree(0)
 
 
-    def _dfs_suffix_tree(self, state_id):
-        self._time += 1
-        self.tin[state_id] = self._time
-        for branch in self.children[state_id]:
-            self._dfs_suffix_tree(branch)
-        self._time += 1
-        self.tout[state_id] = self._time
+    def _dfs_suffix_tree(self, root):
+        """
+        Iterative DFS over suffix-link tree, fills tin/tout without recursion.
+        """
+        stack = [(root, iter(self.children[root]))]
 
+        # "enter" root
+        self._time += 1
+        self.tin[root] = self._time
+
+        while stack:
+            state_id, it = stack[-1]
+            try:
+                # try next child of state_id
+                next_state_id = next(it)
+                # "enter" child next_state_id
+                self._time += 1
+                self.tin[next_state_id] = self._time
+                stack.append((next_state_id, iter(self.children[next_state_id])))
+            except StopIteration:
+                # no more children, "exit" v
+                stack.pop()
+                self._time += 1
+                self.tout[state_id] = self._time
 
 
 
