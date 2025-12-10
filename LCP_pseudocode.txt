@@ -1,25 +1,25 @@
 Algorithm: LCF
 Input: string x, string y
 Output: list of all statrting possitions in string x of longest pattern x in text y and length of matchion pattern
-M <- SuffixAutomaton(x)
+SAM <- SuffixAutomaton(x)
 best_length <- 0
 best_states <- Empty_list
 cur_length <- 0
 state <- 0
 # walk y
 for letter <- 0..(|y| - 1) do
- 	if letter not in M[next[state]] then	# check for transitions
+ 	if letter not in SAM[next[state]] then	# check for transitions
 		cur_length <- cur_length +1
-		state <- M[next[state[letter]]]
+		state <- SAM[next[state[letter]]]
 	else
 		repeat
 			cur_length <- cur_length +1	# walk suffix links
-			state <- M[suffix_link[state]]
-		until state = 0 or letter in M[next[state]]
+			state <- SAM[suffix_link[state]]
+		until state = 0 or letter in SAM[next[state]]
 
-		if letter in M[next[state]] then
+		if letter in SAM[next[state]] then
 			cur_length <- cur_length +1
-			state <- M[next[state[letter]]]
+			state <- SAM[next[state[letter]]]
 		else	
 			cur_length <- 0		# reset root
 	
@@ -32,19 +32,19 @@ for letter <- 0..(|y| - 1) do
 			append state to best_states
 
     if best_len == 0:	# no common substring, return ([], 0)
-        return (empty list, 0)
+        return (empty_list, 0)
 
     hits = empty list
-    L = best_len
+    l = best_len
 
-    for each state s in best_states:
-        t_in  = M[tin[s]]
-        t_out = M[tout[s]]
+    for state in best_states do
+        t_in  = SAM[tin[state]]
+        t_out = SAM[tout[state]]
 
-        for i from 0 to |x| - 1:	# scan all end positions i in x
-            st = M[state_at_pos[i]]
+        for i <- 0..(|x| - 1) do	# scan all end positions i in x
+            st = SAM[state_at_pos[i]]
 
-            if t_in ≤ M.tin[st] ≤ t_out:	# subtree of s?
-                start_pos = i - L + 1   # substring x[start_pos .. i] has length L
+            if t_in ≤ SAM.tin[st] ≤ t_out:	# subtree of state
+                start_pos = i - l + 1   # substring x[start_pos .. i] has length l
                 append start_pos to hits
-return hits, L
+return hits, l

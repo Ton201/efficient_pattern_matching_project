@@ -20,6 +20,8 @@ Get the understanding for suffixlink tree and DFS took some time and effort.
 
 ##  LCF Algorithm design
 -   Describe and write pseudocode of your algorithm
+
+details in LCP_pseudocode.txt
 -   Analyse time and memory consumption
 -   Please, keep your variable name same as in implementation
 
