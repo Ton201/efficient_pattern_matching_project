@@ -1,0 +1,16 @@
+Algorithm Suffix-Automaton-Online
+Input: w ∈ Σ+, n = |w|
+Output: SAut(w)
+1: M ← New automaton()
+2: L[initial[M]] ← 0 	⊲ label of the state
+3: sℓ[initial[M]] ← ∅
+4: last[M] ← initial[M]
+5: for i ← 0..(n − 1) do
+6: 	Extension(w[i])	⊲ SAut(w[0..i− 1]) → SAut(w[0..i])
+7: end for
+8: p ← last[M]
+9: repeat
+10: 	final[p] ← True	⊲ set up final states
+11: 	p ← sℓ[p]
+12: until p = ∅
+13: return M

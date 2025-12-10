@@ -1,0 +1,30 @@
+function Extension(a ∈ Σ)
+1: new ← New state()
+2: L[new] ← L[last[M]] + 1	⊲ the depth of the state
+3: p ← last[M]
+4: repeat
+5: 	δ(p, a) ← new		⊲ extend if no transition
+6: 	p ← sℓ[p]
+7: until not(p != ∅ and δ(p, a) = ∅)
+8: if p = ∅ then
+9: sℓ[new] ← initial[M]
+10: else
+11: 	q ← δ(p, a) 		⊲ existing transition
+12: 	if L[p] + 1 = L[q] then
+13: 		sℓ[new] ← q 	⊲ advance if matching transition
+14: 	else
+15: 		clone ← New state()	⊲ clone the state if collision
+16: 		L[clone] ← L[p] + 1
+17:  		for ∀b ∈ Σ do
+18:			δ(clone, b) ← δ(q, b) 	⊲ copy transitions of q to clone
+19: 		end for
+20: 		sℓ[new] ← clone
+21: 		sℓ[clone] ← sℓ[q]
+22: 		sℓ[q] ← clone
+23: 		repeat			⊲ redirect transitions leading to q to lead to clone
+24: 			δ(p, a) ← clone
+25: 			p ← sℓ[p]
+26: 		until p = ∅ and δ(p, a) = q
+27: 	end if
+28: end if
+29: last[M] ← new
