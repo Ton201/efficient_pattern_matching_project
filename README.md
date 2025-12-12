@@ -21,14 +21,34 @@ Get the understanding for suffixlink tree and DFS took some time and effort.
 ##  LCF Algorithm design
 -   Describe and write pseudocode of your algorithm
 
-details in LCP_pseudocode.txt
+details in pseudocodes/LCP_pseudocode.txt
 -   Analyse time and memory consumption
--   Please, keep your variable name same as in implementation
+
+Time:
+
+Nested loop in the hit collection phase can be of time complexity $O(n^2)$ for short LCFand long string y. There for the time complexity can be expressed as follows:
+
+$|x| = n$
+$|y| = m$
+
+SAM.build + DFS over suffix tree + scanning of y + collecting the hit possitions in x (nested loop) =
+$$
+= O(n) + O(n) + O(m) + O(n^2)
+$$
+
+Space complecxity:
+
+max(SAM state) = 2n + 1 --> O(n)
+There are max 1 tin, tout per state and best states. --> O(n)
+There are max n state_at_position and hits. --> O(n)
+
+Therefore the final space complexity is O(n).
 
 ##  Experiment results
 -   Import your graphs from the experiments
 -   How the pattern length and the number of occurences in the text inflict the query time?
 -   Did you have any troubles you want to share with experiment running and evaluation?
+I hit memmory limit when runnign *match_all()* method on *mono* dataset. It was caused by recursion in *_dfs_suffix_tree()* method. I had to reimplement the method using iterative approach.
 
 ##  Conclusion
 -   For what kind of queries and data would you recommend Suffix Automaton data structure?
