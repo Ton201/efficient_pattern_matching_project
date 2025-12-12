@@ -12,7 +12,7 @@ I used Suffix-Automaton-Online algorithm as described in provided lecture materi
 
 	- for **match_first()** and **match_last()** I applied similar idea to implementation of count(). Only difference is that it does not make sense to add up first or last occurrence. The minimum and maximum of first and last occurrence respectively are calculated between state and its suffix link.  
 
-	- **match_all()** method was more challenging to implement. Applying the same logic as in previous methods would work. However, the time and memory complexity would be $O(n^2)$ which would be exploited later on by _mono dataset_. The chose approach was _suffix link tree_ + _depth first search (DFS)_ to navigate it efficiently.(link)[https://cp-algorithms.com/string/suffix-automaton.html#all-occurrence-positions] 
+	- **match_all()** method was more challenging to implement. Applying the same logic as in previous methods would work. However, the time and memory complexity would be $O(n^2)$ which would be exploited later on by _mono dataset_. The chose approach was _suffix link tree_ + _depth first search (DFS)_ to navigate it efficiently. [link](https://cp-algorithms.com/string/suffix-automaton.html#all-occurrence-positions)
 
 -   Did you have any troubles you want to share with your implementation?
 
@@ -26,30 +26,70 @@ details in pseudocodes/LCP_pseudocode.txt
 
 Time:
 
-Nested loop in the hit collection phase can be of time complexity $O(n^2)$ for short LCFand long string y. There for the time complexity can be expressed as follows:
+Nested loop in the hit collection phase can be of time complexity $O(n^2)$ for short LCF and long string y. Therefore the time complexity can be expressed as follows:
 
-$|x| = n$
-$|y| = m$
+$|x| = n; |y| = m$
 
-SAM.build + DFS over suffix tree + scanning of y + collecting the hit possitions in x (nested loop) =
 $$
-= O(n) + O(n) + O(m) + O(n^2)
+SAM.build + DFS\space over\space suffix\space tree + scanning\space of\space y + collecting the hit possitions in x (nested loop) =
+$$
+$$
+= O(n) + O(n) + O(m) + O(n^2) = O(n^2)
 $$
 
 Space complecxity:
 
-max(SAM state) = 2n + 1 --> O(n)
-There are max 1 tin, tout per state and best states. --> O(n)
-There are max n state_at_position and hits. --> O(n)
+- max(SAM state) = 2n + 1 --> O(n)
+- There are max 1 tin, tout per state and best states. --> O(n)
+- There are max n state_at_position and hits. --> O(n)
 
-Therefore the final space complexity is O(n).
+Therefore the final space complexity is $O(n)$.
 
 ##  Experiment results
 -   Import your graphs from the experiments
+
+Table 1: Overall SAM statistics
+
+| dataset | construction time [s] | n_states | n_transitions |
+|---------|:---------------:|:--------:|:-------------:|
+| dna     | 11.33           | 1739736  | 2641078       |
+| english | 9.65            | 1612015  | 2280703       |
+| mono    | 4.48            | 1048577  | 1048576       |
+| random  | 8.47            | 1358613  | 2405065       |
+
+Graphical result for searching in SAM for all datasets (search time normalisation by occurrences on the left, by pattern length on the right):
+
+|   |   |
+|---|---|
+|![Occurences vs time](./datasets/dna/dna_occ_vs_time.png)   |![Pattern length vs time](./datasets/dna/dna_len_vs_time.png)   |
+|![](./datasets/english/english_occ_vs_time.png)   |![](./datasets/english/english_len_vs_time.png)   |
+|![](./datasets/mono/mono_occ_vs_time.png)   |![](./datasets/mono/mono_len_vs_time.png)   |
+|![](./datasets/random/random_occ_vs_time.png)   |![](./datasets/random/random_len_vs_time.png)   |
+
+
+
+
 -   How the pattern length and the number of occurences in the text inflict the query time?
+
+The general trend for search with number of occurrences is that the more pressent is the searched pattern in the text, the less time per match is required. This relation seems to be quite linear.
+
+On the other hand, time per hit is longer the longer the pattern is. In case of english and dna dataset, this behavior hits a threshold at some length of a pattern. In mono dataset, relationship seams to be unbounded and linear.
+
+None of the above can be applied to search for random patterns in random text.
+
 -   Did you have any troubles you want to share with experiment running and evaluation?
-I hit memmory limit when runnign *match_all()* method on *mono* dataset. It was caused by recursion in *_dfs_suffix_tree()* method. I had to reimplement the method using iterative approach.
+
+I hit memory limit when runnign *match_all()* method on *mono* dataset. It was caused by recursion in *_dfs_suffix_tree()* method. I had to reimplement the method using iterative approach.
 
 ##  Conclusion
 -   For what kind of queries and data would you recommend Suffix Automaton data structure?
+
+It is clear that Suffix Automaton performs the best in scenarios when we are searching for longer patterns in meaningful texts such as DNA or natural language.  
+
 -   Can you just by your words compare SAM with other suffix data structures (Trie, Tree, Array?)
+
+Alhough suffix array and SAM share space complexity of $O(n)$, suffix array should be in practice more memory efficient becouse they share less values (no suffix links, transitions etc.) However, search in suffix array is of $O(m + log(n))$ complexity. Suffix automaton with search complexity of $O(pattern_size)$ outperforms the suffix array.
+
+Suffix trie is the least memmory efficient out of all mention structures - space efficiencz of $O(n^2)$. It stores all suffixes with transitions for all letters in tree-like structure with suffix links. However this property can be beneficial for tasks like autocompletion from a dictionary.
+
+Suffix trees are quite similar to SAMs. They are also of space complexity of $O(n)$ with search complexity of $O(pattern\_size)$.
