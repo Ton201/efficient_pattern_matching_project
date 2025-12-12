@@ -58,4 +58,3 @@ def LCF(x, y):
     # remove duplicates
     hits = sorted(set(hits))
     return hits, best_length
-    raise NotImplementedError("TODO: implement LCF()")

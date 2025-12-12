@@ -58,8 +58,6 @@ class SuffixAutomaton:
         Get number of states in M.
         """
         return len(self.states)
-        raise NotImplementedError("TODO: implement n_states()")
-  
   
     def n_transitions(self):
         """
@@ -69,8 +67,7 @@ class SuffixAutomaton:
         for state in self.states:
                 trans += len(state.next.keys())
         return trans
-        raise NotImplementedError("TODO: implement n_transitions()")
-  
+ 
   
     def build(self, T):
         """
@@ -124,8 +121,7 @@ class SuffixAutomaton:
                                                      self.states[state_index].last_pos)
         self._build_suffix_tree_info()
         return self
-        # raise NotImplementedError("TODO: implement build()")
-    
+   
 
     def _extend(self, letter, pos):
         # create a new state
@@ -189,8 +185,7 @@ class SuffixAutomaton:
                 return 0
             state_id = self.states[state_id].next[letter]
         return self.states[state_id].occurence
-        raise NotImplementedError("TODO: implement count()")
-    
+   
   
     def match_first(self, P) -> int:
         """
@@ -209,8 +204,7 @@ class SuffixAutomaton:
         if end is None:
             return -1
         return end - len(P) + 1
-        raiseNotImplementedError("TODO: implement match_first()")
-    
+   
   
     def match_last(self, P) -> int:
         """
@@ -229,8 +223,7 @@ class SuffixAutomaton:
         if end is None:
             return -1
         return end - len(P) + 1
-        raise NotImplementedError("TODO: implement match_last()")
-    
+   
   
     def match_all(self, P) -> list:
         """
