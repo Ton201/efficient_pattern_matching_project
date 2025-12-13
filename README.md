@@ -1,5 +1,5 @@
 #   Semestral work report B251
--   Implementation Language: **python/cpp**
+-   Implementation Language: **python**
 
 ##  Implementation and data structure design
 -   What construction algorithm did you choose and why?
@@ -88,7 +88,7 @@ It is clear that Suffix Automaton performs the best in scenarios when we are sea
 
 -   Can you just by your words compare SAM with other suffix data structures (Trie, Tree, Array?)
 
-Alhough suffix array and SAM share space complexity of $O(n)$, suffix array should be in practice more memory efficient becouse they share less values (no suffix links, transitions etc.) However, search in suffix array is of $O(m + log(n))$ complexity. Suffix automaton with search complexity of $O(pattern_size)$ outperforms the suffix array.
+Although suffix array and SAM share space complexity of $O(n)$, suffix array should be in practice more memory efficient becouse they share less values (no suffix links, transitions etc.) However, search in suffix array is of $O(m + log(n))$ complexity. Suffix automaton with search complexity of $O(pattern\_size)$ outperforms the suffix array.
 
 Suffix trie is the least memmory efficient out of all mention structures - space efficiencz of $O(n^2)$. It stores all suffixes with transitions for all letters in tree-like structure with suffix links. However this property can be beneficial for tasks like autocompletion from a dictionary.
 
