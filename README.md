@@ -21,7 +21,58 @@ Get the understanding for suffixlink tree and DFS took some time and effort.
 ##  LCF Algorithm design
 -   Describe and write pseudocode of your algorithm
 
-details in pseudocodes/LCP_pseudocode.txt
+```
+Algorithm: LCF
+Input: string x, string y
+Output: list of all statrting possitions in string x of longest pattern x in text y and length l of matchion pattern
+SAM <- SuffixAutomaton(x)
+best_length <- 0
+best_states <- Empty_list
+cur_length <- 0
+state <- 0
+# walk y
+for letter <- 0..(|y| - 1) do
+        if letter not in SAM[next[state]] then  # check for transitions
+                cur_length <- cur_length +1
+                state <- SAM[next[state[letter]]]
+        else
+                repeat
+                        cur_length <- cur_length +1     # walk suffix links
+                        state <- SAM[suffix_link[state]]
+                until state == 0 or letter in SAM[next[state]]
+
+                if letter in SAM[next[state]] then
+                        cur_length <- cur_length +1
+                        state <- SAM[next[state[letter]]]
+                else
+                        cur_length <- 0         # reset root
+
+        if cur_length > best_length then        # update best_lenght
+                best_length <- cur_length
+                best_states <- Empty_list
+                best_states[0] <- state
+        else
+                if cur_length > best_length then
+                        append state to best_states
+
+    if best_len == 0:   # no common substring, return ([], 0)
+        return (Empty_list, 0)
+
+    hits <- Empty_list
+    l <- best_len
+
+    for state in best_states do
+        t_in  <- SAM[tin[state]]
+        t_out <- SAM[tout[state]]
+
+        for i <- 0..(|x| - 1) do        # scan all end positions i in x
+            st <- SAM[state_at_pos[i]]
+
+            if t_in ≤ SAM.tin[st] ≤ t_out:      # subtree of state
+                start_pos <- i - l + 1   # substring x[start_pos .. i] has length l
+                append start_pos to hits
+return hits, l
+```
 -   Analyse time and memory consumption
 
 Time:
