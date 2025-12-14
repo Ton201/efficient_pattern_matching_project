@@ -124,9 +124,9 @@ Graphical result for searching in SAM for all datasets (search time normalisatio
 
 The general trend for search with number of occurrences is that the more pressent is the searched pattern in the text, the less time per match is required. This relation seems to be quite linear.
 
-On the other hand, time per hit is longer the longer the pattern is. In case of english and dna dataset, this behavior hits a threshold at some length of a pattern. In mono dataset, relationship seams to be unbounded and linear.
+For mono dataset random datset, normalised time per number of occurrences and length of pattern are constant.
 
-None of the above can be applied to search for random patterns in random text.
+However, in all cases my SAM implementation was outperformed by naive search. This unexpected obsarvation can be contributed to the fact, that naive approach was implemented in C++ which is a compiled and more performent programming language.
 
 -   Did you have any troubles you want to share with experiment running and evaluation?
 
